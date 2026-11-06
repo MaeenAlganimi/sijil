@@ -1,0 +1,9 @@
+node_modules/
+dist/
+*.log
+desktop/node_modules/
+desktop/dist/
+desktop/release/*
+!desktop/release/manifest.json
+!desktop/release/.gitkeep
+*.tsbuildinfo

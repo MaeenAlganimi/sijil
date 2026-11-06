@@ -1,0 +1,61 @@
+{
+  "name": "sijil-desktop",
+  "productName": "Sijil",
+  "version": "1.0.0",
+  "description": "Secure desktop wrapper for the Sijil hosted web app",
+  "main": "main.cjs",
+  "scripts": {
+    "start": "electron .",
+    "build:linux": "electron-builder --linux AppImage --x64",
+    "build:windows": "electron-builder --win zip --x64 --config.win.signAndEditExecutable=false",
+    "build:all": "npm run build:linux && npm run build:windows"
+  },
+  "devDependencies": {
+    "electron": "^33.2.1",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "com.sijil.desktop",
+    "productName": "Sijil",
+    "asar": true,
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "main.cjs",
+      "preload.cjs",
+      "offline.html",
+      "assets/**/*",
+      "package.json"
+    ],
+    "extraMetadata": {
+      "main": "main.cjs"
+    },
+    "linux": {
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "category": "Office",
+      "icon": "assets/icon.png",
+      "artifactName": "Sijil-x86_64.AppImage"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "zip",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "assets/icon.ico",
+      "artifactName": "Sijil-win-x64.zip"
+    },
+    "artifactName": "Sijil-${platform}-${arch}.${ext}"
+  }
+}

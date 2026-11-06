@@ -1,0 +1,12 @@
+{
+  "windows": {
+    "name": "Sijil-win-x64.zip",
+    "size": 111206253,
+    "sha256": "5adc3b88b525a0e3b21a2dcd82d003bf56b174f75708adcb57fea80ce12905ea"
+  },
+  "linux": {
+    "name": "Sijil-x86_64.AppImage",
+    "size": 107978299,
+    "sha256": "0f58822ef9d8c218529918979787725fd5cbd905ea7722481be008efae9f0ca9"
+  }
+}
