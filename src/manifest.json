@@ -1,8 +1,8 @@
 {
   "windows": {
-    "name": "Sijil-win-x64.zip",
-    "size": 111206253,
-    "sha256": "5adc3b88b525a0e3b21a2dcd82d003bf56b174f75708adcb57fea80ce12905ea"
+    "name": "Sijil-Setup-x64.exe",
+    "size": 83639108,
+    "sha256": "cb6c3ca773c5f2cd708247f154b263c4ca0a44569392c2f7eba289af1b681814"
   },
   "linux": {
     "name": "Sijil-x86_64.AppImage",

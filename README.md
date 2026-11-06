@@ -12,11 +12,11 @@ Deploy the site to Vercel with the included `vercel.json`. The hosted product is
 
 ## Downloads
 
-- **Windows x64:** portable ZIP (`Sijil-win-x64.zip`)
+- **Windows x64:** setup installer (`Sijil-Setup-x64.exe`)
 - **Linux x86_64:** AppImage (`Sijil-x86_64.AppImage`)
 - **macOS:** coming later; a Mac build machine is required
 
-Downloads link to stable filenames on this repository’s [latest GitHub release](https://github.com/MaeenAlganimi/sijil/releases/latest). Current desktop builds are unsigned. Windows is a portable ZIP (not an installer), and SmartScreen may display a warning when opening the app. Artifact sizes and SHA256 values shown on the site come from [`src/manifest.json`](src/manifest.json), copied from the build manifest in `desktop/release/manifest.json`.
+Downloads link to stable filenames on this repository’s [latest GitHub release](https://github.com/MaeenAlganimi/sijil/releases/latest). Current desktop builds are unsigned. Windows is a one-click setup `.exe` (per-user install, Start Menu and desktop shortcuts, uninstall from Settings → Apps). Builds are not code-signed, so SmartScreen may warn: choose More info → Run anyway. Artifact sizes and SHA256 values shown on the site come from [`src/manifest.json`](src/manifest.json), copied from the build manifest in `desktop/release/manifest.json`.
 
 ## Desktop wrapper
 
@@ -31,7 +31,7 @@ npm run typecheck
 npm run build
 ```
 
-Build desktop artifacts from `desktop/` with `npm install && npm run build:linux && npm run build:windows` (the Windows ZIP build disables executable signing/editing because Wine is unavailable in this Linux environment). Linux packaging produces an AppImage. Windows packaging produces a portable ZIP because this build environment does not have Wine; no installer is offered. Release artifacts are kept in the gitignored `desktop/release/` directory.
+Build from `desktop/` with `npm install && npm run build:linux`. The Windows installer is compiled with the native Linux `makensis` from [`desktop/installer.nsi`](desktop/installer.nsi) (no Wine needed): build `win-unpacked` with electron-builder, then run `makensis -DPRODUCT=... -DAPPID=... -DVERSION=1.0.1 -DSRC=<win-unpacked> -DOUTFILE=<Setup.exe> desktop/installer.nsi`. Linux packaging produces an AppImage. Release artifacts are kept in the gitignored `desktop/release/` directory.
 
 ## Project notes
 
