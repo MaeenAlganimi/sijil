@@ -6,7 +6,7 @@ This repository contains the public marketing website and a desktop wrapper. The
 
 ## Website
 
-The static product site is built with Vite, React, and TypeScript. It includes responsive light and dark themes, accessibility-conscious interactions, and illustrative interface mockups. The mockups are sample artwork, not screenshots or customer data.
+The static product site is built with Vite, React, and TypeScript. It includes the shared studio theme, responsive layouts, and clearly labeled illustrative interface mockups. The mockups are sample artwork, not screenshots or customer data.
 
 Deploy the site to Vercel with the included `vercel.json`. The hosted product is at [sijil-dun.vercel.app](https://sijil-dun.vercel.app).
 
@@ -16,7 +16,7 @@ Deploy the site to Vercel with the included `vercel.json`. The hosted product is
 - **Linux x86_64:** AppImage (`Sijil-x86_64.AppImage`)
 - **macOS:** coming later; a Mac build machine is required
 
-Downloads link to stable filenames on this repository’s [latest GitHub release](https://github.com/MaeenAlganimi/sijil/releases/latest). Current desktop builds are unsigned. Windows may display a SmartScreen warning when starting the app. Artifact sizes and SHA256 values shown on the site come from [`src/manifest.json`](src/manifest.json), copied from the build manifest in `desktop/release/manifest.json`.
+Downloads link to stable filenames on this repository’s [latest GitHub release](https://github.com/MaeenAlganimi/sijil/releases/latest). Current desktop builds are unsigned. Windows is a portable ZIP (not an installer), and SmartScreen may display a warning when opening the app. Artifact sizes and SHA256 values shown on the site come from [`src/manifest.json`](src/manifest.json), copied from the build manifest in `desktop/release/manifest.json`.
 
 ## Desktop wrapper
 
