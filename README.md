@@ -6,7 +6,7 @@ This repository contains the public marketing website and a desktop wrapper. The
 
 ## Website
 
-The static product site is built with Vite, React, and TypeScript. It includes the shared studio theme, responsive layouts, and clearly labeled illustrative interface mockups. The mockups are sample artwork, not screenshots or customer data.
+The static product site is built with Vite, React, and TypeScript. It includes the shared studio theme, responsive layouts, and product screens with sample data. They do not contain real customer data.
 
 Deploy the site to Vercel with the included `vercel.json`. The hosted product is at [sijil-dun.vercel.app](https://sijil-dun.vercel.app).
 
@@ -20,7 +20,7 @@ Downloads link to stable filenames on this repository’s [latest GitHub release
 
 ## Desktop wrapper
 
-The Electron app loads `https://sijil-dun.vercel.app` by default and can be configured with `SIJIL_APP_URL` or `--sijil-url=https://...`. It is a secure wrapper around the hosted app, not a local copy of the product. Its window enables context isolation and sandboxing, disables Node integration, restricts in-app navigation to the configured origin, and opens external HTTPS/mail links in the system browser. When offline, the server returns an HTTP error, or loading fails, a branded local screen offers retry.
+The Electron app loads `https://sijil-dun.vercel.app` by default (the `DEFAULT_APP_URL` constant at the top of `desktop/main.cjs`) and can be configured with `SIJIL_APP_URL` or `--sijil-url=https://...`. It is a secure wrapper around the hosted app, not a local copy of the product. Its window enables context isolation and sandboxing, disables Node integration, restricts in-app navigation to the configured origin, and opens external HTTPS/mail links in the system browser. When offline, the server returns an HTTP error, or loading fails, a branded local screen offers retry.
 
 ## Development
 
@@ -31,7 +31,11 @@ npm run typecheck
 npm run build
 ```
 
-Build from `desktop/` with `npm install && npm run build:linux`. The Windows installer is compiled with the native Linux `makensis` from [`desktop/installer.nsi`](desktop/installer.nsi) (no Wine needed): build `win-unpacked` with electron-builder, then run `makensis -DPRODUCT=... -DAPPID=... -DVERSION=1.0.1 -DSRC=<win-unpacked> -DOUTFILE=<Setup.exe> desktop/installer.nsi`. Linux packaging produces an AppImage. Release artifacts are kept in the gitignored `desktop/release/` directory.
+Build from `desktop/` with `npm install && npm run build:linux`. The Windows installer is compiled with the native Linux `makensis` from [`desktop/installer.nsi`](desktop/installer.nsi) (no Wine needed): build `win-unpacked` with electron-builder, then run `makensis -DPRODUCT=... -DAPPID=... -DVERSION=1.0.0 -DSRC=<win-unpacked> -DOUTFILE=<Setup.exe> desktop/installer.nsi`. Linux packaging produces an AppImage. Release artifacts are kept in the gitignored `desktop/release/` directory.
+
+### Releases and auto-updates
+
+Pushing a tag such as `v1.0.1` (it must match `version` in `desktop/package.json`) runs the release workflow (`.github/workflows/release.yml`, staged at `ci/release.yml` until it is moved there), which builds the Windows setup installer (with electron-builder's NSIS target) and the Linux AppImage on GitHub Actions and attaches them, with the `latest.yml` / `latest-linux.yml` update metadata, to that tag's GitHub release. Installed apps use `electron-updater` to check this repository's GitHub Releases and install a newer version when the app quits. Apps installed from v1.0.0 do not include the updater, so those users need to install the next version manually once.
 
 ## Project notes
 
