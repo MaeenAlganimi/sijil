@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { ChevronDown } from 'lucide-react';
 import manifest from './manifest.json';
+import { legal, LEGAL_DRAFT, type LegalDoc } from './legal';
 import './styles.css';
 
 type Language = 'en' | 'ar';
@@ -39,6 +40,28 @@ const copy = {
   }
 } as const;
 
+type Page = 'home' | 'privacy' | 'terms';
+function getPage(): Page {
+  const path = window.location.pathname.replace(/\/+$/, '');
+  return path === '/privacy' ? 'privacy' : path === '/terms' ? 'terms' : 'home';
+}
+const page = getPage();
+const home = page === 'home' ? '' : '/';
+function withPlaceholders(text: string) {
+  return text.split(/(\[[^\]]+\])/).map((part, i) => /^\[[^\]]+\]$/.test(part) ? <mark key={i} className="placeholder" dir="ltr">{part}</mark> : part);
+}
+function LegalPage({ doc, language }: { doc: LegalDoc; language: Language }) {
+  const l = legal[language];
+  return <article className="legal wrap" aria-labelledby="legal-title">
+    <nav className="legal-switch" aria-label={language === 'ar' ? 'الصفحات القانونية' : 'Legal pages'}><a href="/privacy" aria-current={page === 'privacy' ? 'page' : undefined}>{l.privacyLabel}</a><a href="/terms" aria-current={page === 'terms' ? 'page' : undefined}>{l.termsLabel}</a></nav>
+    <h1 id="legal-title">{doc.title}</h1>
+    <p className="legal-updated">{withPlaceholders(l.updated)}</p>
+    {LEGAL_DRAFT && <p className="legal-draft" role="note">{l.draft}</p>}
+    {doc.intro.map((text) => <p key={text}>{withPlaceholders(text)}</p>)}
+    {doc.sections.map((section) => <section key={section.h}><h2>{section.h}</h2>{section.p?.map((text) => <p key={text}>{withPlaceholders(text)}</p>)}{section.ul && <ul>{section.ul.map((item) => <li key={item}>{withPlaceholders(item)}</li>)}</ul>}</section>)}
+    <p className="legal-back"><a className="text-link" href="/">{l.back}</a></p>
+  </article>;
+}
 function getInitialLanguage(): Language {
   try { const saved = localStorage.getItem('site-language'); if (saved === 'en' || saved === 'ar') return saved; } catch { /* Storage may be disabled. */ }
   return navigator.language.toLowerCase().startsWith('ar') ? 'ar' : 'en';
@@ -52,13 +75,15 @@ function App() {
     document.documentElement.dir = rtl ? 'rtl' : 'ltr';
     document.title = rtl ? 'سجل — إدارة مواعيد مستندات الأعمال' : 'Sijil — Business document expiry manager';
     document.querySelector('meta[name="description"]')?.setAttribute('content', rtl ? 'يساعد سجل الشركات على متابعة التراخيص والعقود والتصاريح والتأمين ومواعيد تجديدها.' : 'Sijil helps businesses keep licenses, contracts, permits and insurance in view, with reminders before renewal.');
+    if (page !== 'home') document.title = `${legal[language][page].title} — ${rtl ? 'سجل' : 'Sijil'}`;
     try { localStorage.setItem('site-language', language); } catch { /* Storage may be disabled. */ }
   }, [language]);
   const switchLanguage = () => setLanguage((current) => current === 'en' ? 'ar' : 'en');
   const videoBase = language === 'ar' ? '/demo/sijil-explainer-ar' : '/demo/sijil-explainer';
   return <main id="top">
-    <header className="nav wrap"><a className="brand" href="#top" aria-label={t.home}><span className="mark">س</span><span>{language === 'en' ? 'Sijil' : 'سجل'}</span></a><nav aria-label={t.nav}><a href="#features">{t.featuresNav}</a><a href="#download">{t.download}</a><a href="https://github.com/MaeenAlganimi/sijil" target="_blank" rel="noreferrer">GitHub</a></nav><div className="nav-actions"><button className="language-toggle" type="button" onClick={switchLanguage} aria-pressed={language === 'ar'} aria-label={t.switchLanguage}>EN | عر</button><a className="button primary nav-cta" href="#download">{t.download}</a></div></header>
-    <section className="hero wrap"><div className="hero-copy"><h1>{t.heroTitle}</h1><p>{t.heroBody}</p><div className="hero-actions"><a className="button primary" href="#download">{t.downloadSijil}</a><a className="text-link" href={webApp} target="_blank" rel="noreferrer">{t.webApp}</a></div></div><ProductPreview frame={t.frame} language={language}/></section>
+    <header className="nav wrap"><a className="brand" href={page === 'home' ? '#top' : '/'} aria-label={t.home}><span className="mark">س</span><span>{language === 'en' ? 'Sijil' : 'سجل'}</span></a><nav aria-label={t.nav}><a href={`${home}#features`}>{t.featuresNav}</a><a href={`${home}#download`}>{t.download}</a><a href="https://github.com/MaeenAlganimi/sijil" target="_blank" rel="noreferrer">GitHub</a></nav><div className="nav-actions"><button className="language-toggle" type="button" onClick={switchLanguage} aria-pressed={language === 'ar'} aria-label={t.switchLanguage}>EN | عر</button><a className="button primary nav-cta" href={`${home}#download`}>{t.download}</a></div></header>
+    {page === 'home' ? <>
+    <section className="hero wrap"><div className="hero-copy"><h1>{t.heroTitle}</h1><p>{t.heroBody}</p><div className="hero-actions"><a className="button primary" href={`${home}#download`}>{t.downloadSijil}</a><a className="text-link" href={webApp} target="_blank" rel="noreferrer">{t.webApp}</a></div></div><ProductPreview frame={t.frame} language={language}/></section>
     <section className="section wrap who"><h2>{t.whoTitle}</h2><p>{t.whoBody}</p></section>
     <section className="section features" id="features"><div className="wrap"><h2>{t.featuresTitle}</h2><dl className="feature-list">{t.features.map(([title, body]) => <div key={title}><dt>{title}</dt><dd>{body}</dd></div>)}</dl></div></section>
     <section className="section wrap how"><h2>{t.how}</h2><div>{t.steps.map((step) => <p key={step}>{step}</p>)}</div></section>
@@ -66,7 +91,8 @@ function App() {
     <section className="section wrap video-section" aria-labelledby="video-title"><div className="video-copy"><h2 id="video-title">{t.videoTitle}</h2><p>{t.videoBody}</p></div><video key={language} className="explainer-video" controls playsInline preload="metadata" poster={language === 'ar' ? '/demo/video-poster-ar.jpg' : '/demo/video-poster.jpg'}><source src={`${videoBase}.mp4`} type="video/mp4"/><track kind="captions" src={`${videoBase}.vtt`} srcLang={language} label={language === 'ar' ? 'العربية' : 'English'} default/>{t.videoFallback} <a href={`${videoBase}.mp4`}>{t.videoLink}</a></video></section>
     <section className="section wrap download" id="download"><div className="download-intro"><h2>{t.downloadTitle}</h2><p>{t.downloadBody}</p></div><div className="download-list">{files.map(({ platform, file, detail, key }) => { const item = manifest[key as keyof typeof manifest]; return <div className="download-row" key={file}><div><h3 dir="ltr">{platform}</h3><p>{detail[language]}</p><p className="integrity"><bdi dir="ltr">{(item.size / 1024 / 1024).toFixed(1)} MB</bdi> <span>SHA256</span> <code dir="ltr">{item.sha256}</code></p></div><a className="button primary download-button" href={`https://github.com/MaeenAlganimi/sijil/releases/latest/download/${file}`}>{t.downloadButton}</a></div>; })}<div className="download-row coming"><div><h3 dir="ltr">macOS</h3><p>{t.macDetail}</p></div><span>{t.coming}</span></div></div><p className="download-note">{t.note}</p></section>
     <section className="section faq"><div className="wrap faq-layout"><h2>{t.questions}</h2><div className="faq-list">{t.faqs.map(([question, answer]) => <details key={question}><summary>{question}<ChevronDown size={17} aria-hidden="true"/></summary><p>{answer}</p></details>)}</div></div></section>
-    <footer className="footer wrap"><a className="brand" href="#top"><span className="mark">س</span><span>{language === 'en' ? 'Sijil' : 'سجل'}</span></a><p>{t.footer}</p><a href="https://github.com/MaeenAlganimi/sijil" target="_blank" rel="noreferrer">GitHub</a><small>{t.footerNote}</small></footer>
+    </> : <LegalPage doc={legal[language][page]} language={language}/>}
+    <footer className="footer wrap"><a className="brand" href={page === 'home' ? '#top' : '/'}><span className="mark">س</span><span>{language === 'en' ? 'Sijil' : 'سجل'}</span></a><p>{t.footer}</p><nav className="footer-links" aria-label={language === 'ar' ? 'روابط التذييل' : 'Footer'}><a href="https://github.com/MaeenAlganimi/sijil" target="_blank" rel="noreferrer">GitHub</a><a href="/privacy">{legal[language].privacyLabel}</a><a href="/terms">{legal[language].termsLabel}</a></nav><small>{t.footerNote}</small></footer>
   </main>;
 }
 function ProductPreview({ frame, language }: { frame: string; language: Language }) { return <figure className="product-frame hero-screen"><figcaption className="frame-head"><span className="mark">س</span><strong>{language === 'en' ? 'Sijil' : 'سجل'}</strong><span>{frame}</span></figcaption><img src="/demo/dashboard.webp" alt={frame} fetchPriority="high"/></figure>; }
