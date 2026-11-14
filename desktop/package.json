@@ -3,16 +3,21 @@
   "productName": "Sijil",
   "version": "1.0.0",
   "description": "Secure desktop wrapper for the Sijil hosted web app",
+  "author": {
+    "name": "Maeen Alganimi"
+  },
+  "license": "MIT",
   "main": "main.cjs",
   "scripts": {
     "start": "electron .",
     "build:linux": "electron-builder --linux AppImage --x64",
     "build:all": "npm run build:linux && npm run build:windows",
-    "build:windows": "electron-builder --win dir --x64 --config.win.signAndEditExecutable=false"
+    "build:windows": "electron-builder --win dir --x64 --config.win.signAndEditExecutable=false",
+    "dist:win": "electron-builder --win nsis --x64"
   },
   "devDependencies": {
-    "electron": "^33.2.1",
-    "electron-builder": "^25.1.8"
+    "electron": "^45.3.0",
+    "electron-builder": "^26.18.0"
   },
   "build": {
     "appId": "com.sijil.desktop",
@@ -57,13 +62,23 @@
       "artifactName": "Sijil-Setup-x64.exe",
       "signAndEditExecutable": false
     },
-    "artifactName": "Sijil-${platform}-${arch}.${ext}",
     "nsis": {
       "oneClick": true,
       "perMachine": false,
       "allowToChangeInstallationDirectory": false,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true
-    }
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "MaeenAlganimi",
+        "repo": "sijil",
+        "releaseType": "release"
+      }
+    ]
+  },
+  "dependencies": {
+    "electron-updater": "^6.8.11"
   }
 }
