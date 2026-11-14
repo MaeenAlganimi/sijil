@@ -1,0 +1,29 @@
+{
+  "name": "sijil-mobile",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Android and iOS wrapper (Capacitor) for the hosted Sijil web app",
+  "author": {
+    "name": "Maeen Alganimi"
+  },
+  "license": "MIT",
+  "scripts": {
+    "sync": "cap sync",
+    "assets": "capacitor-assets generate --android --ios --iconBackgroundColor '#16233F' --iconBackgroundColorDark '#16233F' --splashBackgroundColor '#16233F' --splashBackgroundColorDark '#16233F'",
+    "android:debug": "cap sync android && cd android && ./gradlew assembleDebug",
+    "android:release": "cap sync android && cd android && ./gradlew bundleRelease",
+    "open:android": "cap open android",
+    "open:ios": "cap open ios"
+  },
+  "dependencies": {
+    "@capacitor/android": "^8.6.2",
+    "@capacitor/core": "^8.6.2",
+    "@capacitor/ios": "^8.6.2",
+    "@capacitor/splash-screen": "^8.0.2",
+    "@capacitor/status-bar": "^8.0.4"
+  },
+  "devDependencies": {
+    "@capacitor/assets": "^4.0.0",
+    "@capacitor/cli": "^8.6.2"
+  }
+}
